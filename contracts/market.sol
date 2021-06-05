@@ -11,35 +11,70 @@ contract Marketplace {
     string ipfs_hash;
     address owner;
     uint stock;
+    bool visible;
   }
   uint private listings_id = 0; // initialize at zero and increment as mapping grows
-  mapping(uint => Listing) public listings;
-  // mapping(address => mapping(uint => Listing)) public users;
+  mapping(uint => Listing) private listings;
 
 
   modifier restricted() {
-    require(
-      msg.sender == owner,
-      "This function is restricted to the contract's owner"
-    );
+    require(msg.sender == owner, "This function is restricted to the contract's owner");
     _;
   }
 
-  function removeListing(uint listing_id) public {}
+  modifier requiresOwnerOfItem(uint listing_id) {
+    require(msg.sender == owner || msg.sender == listings[listing_id].owner, "You do not have permission to unlist this item");
+    _;
+  }
 
-  function addListing(string memory ipfs_hash, uint stock) public {
+  function unlistItem(uint listing_id) public {
+    listings[listing_id].visible = false;
+    listings[listing_id].stock = 0;
+    emit UpdateListing(msg.sender, listing_id, "unlist");
+  }
+
+  function increaseStockOfItem(uint listing_id, uint amount) public 
+  requiresOwnerOfItem(listing_id) {
+    listings[listing_id].stock += amount;
+    emit UpdateListing(msg.sender, listing_id, "iStock");
+  }
+ 
+  function setItemVisibility(uint listing_id, bool value) public 
+  requiresOwnerOfItem(listing_id) {
+    listings[listing_id].visible = value;
+    if (value) {
+      emit UpdateListing(msg.sender, listing_id, "visable");
+    } else {
+      emit UpdateListing(msg.sender, listing_id, "invisible");
+    }
+  }
+
+  function updateItem(uint listing_id, bool is_visible, string memory ipfs_hash, uint stock) public requiresOwnerOfItem(listing_id){
     listings[listings_id] = Listing({
       ipfs_hash: ipfs_hash,
       owner: msg.sender,
-      stock: stock
+      stock: stock,
+      visible: is_visible
+    });
+    emit UpdateListing(msg.sender, listings_id, "update");
+  }
+
+  function listItem(string memory ipfs_hash, uint stock, bool is_visible) public {
+    listings[listings_id] = Listing({
+      ipfs_hash: ipfs_hash,
+      owner: msg.sender,
+      stock: stock,
+      visible: is_visible
     });
     emit UpdateListing(msg.sender, listings_id, "add");
     listings_id++;
   }
 
-  // Solidity should automatically create the getter function for the public mapping
-  // function getListing(uint listing_id) public view returns(string memory, address) {
-  //   Listing memory listing = listings[listing_id]; 
-  //   return (listing.ipfs_hash, listing.owner);
-  // }
+  function getListing(uint listing_id) public view 
+  returns(string memory ipfs_hash, address listing_owner, uint stock, bool is_visible) {
+    Listing memory listing = listings[listing_id]; 
+    return (listing.ipfs_hash, listing.owner, listing.stock, listing.visible);
+  }
+
+  
 }
