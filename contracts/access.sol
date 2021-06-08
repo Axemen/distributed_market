@@ -3,13 +3,19 @@ pragma solidity >=0.4.22 <0.9.0;
 
 abstract contract Access {
     mapping(address => bool) admins;
+    address owner;
 
-    function isAdmin(address a) internal view returns (bool) {
-        return admins[a];
+    constructor(address _owner){
+        owner = _owner;
+        admins[owner] = true;
     }
 
-    function isSenderAdmin() internal view returns (bool) {
-        return admins[msg.sender];
+    function addAdmin(address a) public {
+        admins[a] = true;
+    }
+
+    function isAdmin(address a) public view returns (bool) {
+        return admins[a];
     }
 
     modifier requiresAdmin() {
@@ -19,4 +25,14 @@ abstract contract Access {
         );
         _;
     }
+
+    modifier requiresOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    function isOwner(address a) public view returns(bool) {
+        return a == owner;
+    }
+
 }
