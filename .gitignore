@@ -1,2 +1,5 @@
 .venv
 bin/
+*.ipynb
+node_modules
+.vscode
