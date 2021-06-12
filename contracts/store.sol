@@ -50,7 +50,7 @@ contract Store is Access {
         return values;
     }
 
-    function iterateItems(uint256 cursor, uint8 length) 
+    function getAllItems(uint256 cursor, uint8 length) 
     external view returns (string[] memory values, uint256) {
         values = new string[](length);
         uint8 c = 0;

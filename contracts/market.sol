@@ -14,9 +14,11 @@ contract Marketplace is Access {
 
     constructor() Access(msg.sender){}
 
-    function addStore(address store_owner, string memory ipfs_hash, bool is_visible) 
-    external {
+    function addStore(string memory ipfs_hash, bool is_visible) 
+    external returns(address){
         stores[store_id_generator.next()] = new Store(msg.sender, ipfs_hash, is_visible);
+        store_visibility[store_id_generator.current()] = true;
+        return address(stores[store_id_generator.current()]);
     }
 
     function setStoreVisibility(uint256 store_id, bool visible) 
@@ -26,23 +28,23 @@ contract Marketplace is Access {
 
     function getStore(uint256 store_id) 
     external view returns (string memory) {
-        return stores[store_id].ipfs_hash;
+        return stores[store_id].ipfs_hash();
     }
 
     function getStores(uint256[] calldata ids)
     external view returns (string[] memory) {
         string[] memory results = new string[](ids.length);
         for (uint256 i = 0; i < ids.length; i++) {
-            results[i] = stores[ids[i]].ipfs_hash;
+            results[i] = stores[ids[i]].ipfs_hash();
         }
         return results;
     }
 
-    function iterateStores(uint256 cursor, uint256 length)
+    function getAllStores(uint256 cursor, uint256 length)
     external view returns (uint256, string[] memory) {
         uint256 c = 0;
         string[] memory values = new string[](length);
-        for (uint256 i = cursor; (c < length && cursor < store_id_generator.current()); i++) {
+        for (uint256 i = cursor; (c < length && cursor <= store_id_generator.current()); i++) {
             if (store_visibility[cursor] &&  stores[cursor].is_visible()) values[c] = stores[cursor].ipfs_hash();
             cursor++;
         }
