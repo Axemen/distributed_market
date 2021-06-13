@@ -59,29 +59,29 @@ async function getAll(fn, start, page_size) {
   return allValues.filter(isNotEmpty);
 }
 // Test Market.getAllStores
-// contract("Market", async (accounts) => {
-//   it("Should iterate through all available stores", async () => {
-//     const market = await Market.deployed();
-//     const ipfs = await IPFS.create();
+contract("Market", async (accounts) => {
+  it("Should iterate through all available stores", async () => {
+    const market = await Market.deployed();
+    const ipfs = await IPFS.create();
 
-//     let hashes = [];
-//     for (let i = 0; i < 20; i++) {
-//       let m = {
-//         title: `store ${i}`,
-//         description: `This is store ${i}`,
-//       };
+    let hashes = [];
+    for (let i = 0; i < 20; i++) {
+      let m = {
+        title: `store ${i}`,
+        description: `This is store ${i}`,
+      };
 
-//       let cid = await ipfs.add(JSON.stringify(m));
-//       hashes.push(cid["path"]);
-//       await market.addStore(cid["path"], true);
-//     }
+      let cid = await ipfs.add(JSON.stringify(m));
+      hashes.push(cid["path"]);
+      await market.addStore(cid["path"], true);
+    }
 
-//     let stores = await getAll(market.getAllStores, 0, 10);
+    let stores = await getAll(market.getAllStores, 0, 10);
 
-//     assert.equal(JSON.stringify(stores), JSON.stringify(hashes));
-//     await ipfs.stop();
-//   });
-// });
+    assert.equal(JSON.stringify(stores), JSON.stringify(hashes));
+    await ipfs.stop();
+  });
+});
 contract("Market", async (accounts) => {
   it("Should change a a store's market level visibility", async () => {
     let market = await Market.deployed();
