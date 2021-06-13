@@ -53,7 +53,7 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"a\",\"type\":\"address\"}],\"name\":\"addAdmin\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"a\",\"type\":\"address\"}],\"name\":\"isAdmin\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"a\",\"type\":\"address\"}],\"name\":\"isOwner\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/E/distributed_market/contracts/Access.sol\":\"Access\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/E/distributed_market/contracts/Access.sol\":{\"keccak256\":\"0xdd517b2aeef6d730df7d6253561b766a7c01710aff221ae079aa52797d1d754d\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3487a89d76e017bb2d478b08cfd4f68613b040d04d257cc5bf5be3c35653b632\",\"dweb:/ipfs/QmVQKFNAaZ3FybvDrmqjMr194pFNGDurhYie6vHLybBzro\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.4+commit.c7e474f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"a\",\"type\":\"address\"}],\"name\":\"addAdmin\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"a\",\"type\":\"address\"}],\"name\":\"isAdmin\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"a\",\"type\":\"address\"}],\"name\":\"isOwner\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/mnt/e00c4ee2-9fdd-4d28-abef-b3d26ca7d4c2/distributed_market/contracts/Access.sol\":\"Access\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/mnt/e00c4ee2-9fdd-4d28-abef-b3d26ca7d4c2/distributed_market/contracts/Access.sol\":{\"keccak256\":\"0xdd517b2aeef6d730df7d6253561b766a7c01710aff221ae079aa52797d1d754d\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3487a89d76e017bb2d478b08cfd4f68613b040d04d257cc5bf5be3c35653b632\",\"dweb:/ipfs/QmVQKFNAaZ3FybvDrmqjMr194pFNGDurhYie6vHLybBzro\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -62,9 +62,9 @@
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "// SPDX-License-Identifier: MIT\npragma solidity >=0.8 <0.9.0;\n\nabstract contract Access {\n    mapping(address => bool) admins;\n    address owner;\n\n    constructor(address _owner){\n        owner = _owner;\n        admins[owner] = true;\n    }\n\n    function addAdmin(address a) public {\n        admins[a] = true;\n    }\n\n    function isAdmin(address a) public view returns (bool) {\n        return admins[a];\n    }\n\n    modifier requiresAdmin() {\n        require(\n            admins[msg.sender],\n            \"You need admin access to use this function\"\n        );\n        _;\n    }\n\n    modifier requiresOwner() {\n        require(msg.sender == owner);\n        _;\n    }\n\n    function isOwner(address a) public view returns(bool) {\n        return a == owner;\n    }\n\n}\n",
-  "sourcePath": "E:/distributed_market/contracts/Access.sol",
+  "sourcePath": "/mnt/e00c4ee2-9fdd-4d28-abef-b3d26ca7d4c2/distributed_market/contracts/Access.sol",
   "ast": {
-    "absolutePath": "/E/distributed_market/contracts/Access.sol",
+    "absolutePath": "/mnt/e00c4ee2-9fdd-4d28-abef-b3d26ca7d4c2/distributed_market/contracts/Access.sol",
     "exportedSymbols": {
       "Access": [
         83
@@ -1038,7 +1038,7 @@
     "src": "32:727:0"
   },
   "legacyAST": {
-    "absolutePath": "/E/distributed_market/contracts/Access.sol",
+    "absolutePath": "/mnt/e00c4ee2-9fdd-4d28-abef-b3d26ca7d4c2/distributed_market/contracts/Access.sol",
     "exportedSymbols": {
       "Access": [
         83
@@ -2016,8 +2016,8 @@
     "version": "0.8.4+commit.c7e474f2.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.4.0",
-  "updatedAt": "2021-06-13T06:31:55.762Z",
+  "schemaVersion": "3.4.1",
+  "updatedAt": "2021-06-13T14:35:21.746Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
