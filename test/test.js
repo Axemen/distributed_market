@@ -40,13 +40,25 @@ contract("Market", async (accounts) => {
   });
 });
 
-async function getAllStores(start, page_size) {
+async function getAllStores(market, start, page_size) {
   let hasMore = true
   let allValues = []
-  while (hasMore) {
-    let cursor = 
-    let cursor, values = market.getAllStores()
+  let cursor = start;
+
+  let isNotEmpty = (s) => {
+    if (s === "") return false
+    return true
   }
+
+  while (hasMore) {
+    let r = await market.getAllStores(cursor, page_size);
+    cursor = r[0].toNumber();
+    let values = r[1]
+    hasMore = values.every(isNotEmpty);
+    allValues = allValues.concat(values);
+  }
+
+  return allValues.filter(isNotEmpty);
 }
 
 // Test Market.getAllStores
@@ -63,12 +75,27 @@ contract("Market", async (accounts) => {
       }
 
       let cid = await ipfs.add(JSON.stringify(m));
-      hashes.push(cid);
+      hashes.push(cid['path']);
       await market.addStore(cid['path'], true);
     }
 
-    let cursor = 0;
-    let {cursor, values} = await market.getAllStores(cursor, 10);
+    let stores = await getAllStores(market, 0, 10);
+
+    assert.equal(JSON.stringify(stores), JSON.stringify(hashes));
     
+  })
+});
+
+contract("Market", async (accounts) => {
+  it("Should change a a store's market level visibility", async () => {
+    let market = await Market.deployed();
+
+    await market.addStore("asdf", true);
+
+    let initial_vis = await market.store_visibility(0);
+    await market.setStoreVisibility(0, false);
+    let new_vis = await market.store_visibility(0);
+
+    assert.notEqual(initial_vis, new_vis);
   })
 });
