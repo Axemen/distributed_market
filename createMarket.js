@@ -4,7 +4,7 @@ const IPFS = require("ipfs-core");
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:7545");
 const signer = provider.getSigner();
 
-const contract_address = "0x5D4410C1280e4F6050b081D51E560a18f14af814";
+const contract_address = "0x8E3dF9801b671bF7FCD21BE329F7863d8592d4C8";
 
 async function main() {
   const ipfs = await IPFS.create();
@@ -15,34 +15,20 @@ async function main() {
   const market = new ethers.Contract(contract_address, marketABI, provider);
   const marketSigner = market.connect(signer);
 
-  let markets = [
-    {
-      title: "store 0",
-      description: "This is store 0!",
-    },
-    {
-      title: "store 1",
-      description: "this is store 1",
-    },
-    {
-      title: "Store 2",
-      description: "this is store 2",
-    },
-    {
-      title: "Store 3",
-      description: "This is store 3",
-    },
-  ];
+  
 
-  for (let i = 0; i < markets.length; i++) {
-    let element = markets[i];
+  for (let i = 0; i < 50; i++) {
+    let m = {
+      title: `store ${i}`,
+      description: `This is store ${i}`
+    }
 
     // add to ipfs
-    let cid = await ipfs.add(JSON.stringify(element));
+    let cid = await ipfs.add(JSON.stringify(m));
 
     // add to blockchain
-    let a = await marketSigner.addStore(cid["path"], true);
-    console.log(a);
+    await marketSigner.addStore(cid["path"], true);
+    console.log(i);
   }
 }
 main().then(() => process.exit());
