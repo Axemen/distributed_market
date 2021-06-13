@@ -3,7 +3,7 @@ const IPFS = require("ipfs-core");
 const Market = artifacts.require("Market");
 const Store = artifacts.require("Store");
 
-contract("Market", async (accounts) => {
+contract("Market", async (_accounts) => {
   // Test the creation of a store in the market
   it("Should create a new store contract from the deployed market contract", async () => {
     let market = await Market.deployed();
@@ -35,7 +35,7 @@ contract("Market", async (accounts) => {
   });
 });
 
-contract("Market", async (accounts) => {
+contract("Market", async (_accounts) => {
   // Test the creation of a store in the market
   it("Should add new items and retrieve them", async () => {
     let market = await Market.deployed();

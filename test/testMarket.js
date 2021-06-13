@@ -4,7 +4,7 @@ const Market = artifacts.require("Market");
 const Store = artifacts.require("Store");
 
 // Test Market.addStore
-contract("Market", async (accounts) => {
+contract("Market", async (_accounts) => {
   it("Should add a new store and set it's visibility according to what parameters are passed in", async () => {
     let market = await Market.deployed();
 
@@ -23,7 +23,7 @@ contract("Market", async (accounts) => {
   });
 });
 // Test Market.getStores
-contract("Market", async (accounts) => {
+contract("Market", async (_accounts) => {
   it("Should return one store ipfs and one empty string", async () => {
     let market = await Market.deployed();
     await market.addStore("asdf", true);
@@ -59,7 +59,7 @@ async function getAll(fn, start, page_size) {
   return allValues.filter(isNotEmpty);
 }
 // Test Market.getAllStores
-contract("Market", async (accounts) => {
+contract("Market", async (_accounts) => {
   it("Should iterate through all available stores", async () => {
     const market = await Market.deployed();
     const ipfs = await IPFS.create();
@@ -82,7 +82,7 @@ contract("Market", async (accounts) => {
     await ipfs.stop();
   });
 });
-contract("Market", async (accounts) => {
+contract("Market", async (_accounts) => {
   it("Should change a a store's market level visibility", async () => {
     let market = await Market.deployed();
 
