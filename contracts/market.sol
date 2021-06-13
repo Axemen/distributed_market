@@ -1,24 +1,35 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-import "./access.sol";
-import "./utils.sol";
-import "./store.sol";
+import "./Access.sol";
+import "./Utils.sol";
+import "./Store.sol";
 
-contract Marketplace is Access {
+contract Market is Access {
     using IdGenerators for IdGenerators.IdGenerator;
 
     IdGenerators.IdGenerator store_id_generator;
     mapping(uint256 => Store) public stores;
     mapping(uint256 => bool) public store_visibility;
 
+    struct Result {
+        string ipfs_hash;
+        address store_address;
+    }
+
+    event AddStore(address indexed msgSender, uint storeId, address storeAddress);
+
     constructor() Access(msg.sender){}
 
     function addStore(string memory ipfs_hash, bool is_visible) 
-    external returns(address){
-        stores[store_id_generator.next()] = new Store(msg.sender, ipfs_hash, is_visible);
-        store_visibility[store_id_generator.current()] = true;
-        return address(stores[store_id_generator.current()]);
+    external {
+        Store s = new Store(msg.sender, ipfs_hash, is_visible);
+        uint storeId = store_id_generator.next();
+
+        stores[storeId] = s;
+        store_visibility[storeId] = true;
+
+        emit AddStore(msg.sender, storeId, address(s));
     }
 
     function setStoreVisibility(uint256 store_id, bool visible) 
@@ -26,16 +37,13 @@ contract Marketplace is Access {
         store_visibility[store_id] = visible;
     }
 
-    function getStore(uint256 store_id) 
-    external view returns (string memory) {
-        return stores[store_id].ipfs_hash();
-    }
-
     function getStores(uint256[] calldata ids)
     external view returns (string[] memory) {
         string[] memory results = new string[](ids.length);
         for (uint256 i = 0; i < ids.length; i++) {
-            results[i] = stores[ids[i]].ipfs_hash();
+            if (address(stores[ids[i]]) != address(0)) {
+                results[i] = stores[ids[i]].ipfs_hash();
+            }
         }
         return results;
     }

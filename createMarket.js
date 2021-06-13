@@ -4,12 +4,12 @@ const IPFS = require("ipfs-core");
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:7545");
 const signer = provider.getSigner();
 
-const contract_address = "0xF55E0bcFCf57456D6EE353fBF518fF27D0c6D4b1";
+const contract_address = "0x5D4410C1280e4F6050b081D51E560a18f14af814";
 
 async function main() {
   const ipfs = await IPFS.create();
   const marketABI = JSON.parse(
-    fs.readFileSync("build/contracts/Marketplace.json")
+    fs.readFileSync("build/contracts/Market.json")
   )["abi"];
 
   const market = new ethers.Contract(contract_address, marketABI, provider);

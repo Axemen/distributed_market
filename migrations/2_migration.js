@@ -1,4 +1,4 @@
-const Market = artifacts.require("Marketplace");
+const Market = artifacts.require("Market");
 const IdGenerators = artifacts.require("IdGenerators");
 
 module.exports = function (deployer) {

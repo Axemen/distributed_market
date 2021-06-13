@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-import "./utils.sol";
-import "./access.sol";
+import "./Utils.sol";
+import "./Access.sol";
 
 
 contract Store is Access {
