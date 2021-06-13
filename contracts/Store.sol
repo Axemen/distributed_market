@@ -37,10 +37,6 @@ contract Store is Access {
         });
     }
 
-    function getItem(uint item_id) external view returns(string memory) {
-        return items[item_id].ipfs_hash;
-    }
-
     function getItems(uint256[] calldata item_ids)
     external view returns (string[] memory) {
         string[] memory values = new string[](item_ids.length);
