@@ -3,7 +3,6 @@ const IPFS = require("ipfs-core");
 const Market = artifacts.require("Market");
 const Store = artifacts.require("Store");
 
-
 // Test Market.addStore
 contract("Market", async (accounts) => {
   it("Should add a new store and set it's visibility according to what parameters are passed in", async () => {
@@ -22,10 +21,8 @@ contract("Market", async (accounts) => {
     assert.equal(await market.store_visibility(0), true); // Should default to true
     assert.equal(await store.is_visible(), visibility);
   });
-});
 
-// Test Market.getStores
-contract("Market", async (accounts) => {
+  // Test Market.getStores
   it("Should return one store ipfs and one empty string", async () => {
     let market = await Market.deployed();
     await market.addStore("asdf", true);
@@ -38,55 +35,51 @@ contract("Market", async (accounts) => {
       JSON.stringify(await market.getStores([0, 1]))
     );
   });
-});
 
-async function getAllStores(market, start, page_size) {
-  let hasMore = true
-  let allValues = []
-  let cursor = start;
+  async function getAll(fn, start, page_size) {
+    let hasMore = true;
+    let allValues = [];
+    let cursor = start;
 
-  let isNotEmpty = (s) => {
-    if (s === "") return false
-    return true
+    let isNotEmpty = (s) => {
+      if (s === "") return false;
+      return true;
+    };
+
+    while (hasMore) {
+      let r = await fn(cursor, page_size);
+      cursor = r[0].toNumber();
+      let values = r[1];
+      hasMore = values.every(isNotEmpty);
+      allValues = allValues.concat(values);
+    }
+
+    return allValues.filter(isNotEmpty);
   }
 
-  while (hasMore) {
-    let r = await market.getAllStores(cursor, page_size);
-    cursor = r[0].toNumber();
-    let values = r[1]
-    hasMore = values.every(isNotEmpty);
-    allValues = allValues.concat(values);
-  }
-
-  return allValues.filter(isNotEmpty);
-}
-
-// Test Market.getAllStores
-contract("Market", async (accounts) => {
+  // Test Market.getAllStores
   it("Should iterate through all available stores", async () => {
     const market = await Market.deployed();
     const ipfs = await IPFS.create();
 
-    let hashes = []
+    let hashes = [];
     for (let i = 0; i < 20; i++) {
       let m = {
         title: `store ${i}`,
-        description: `This is store ${i}`
-      }
+        description: `This is store ${i}`,
+      };
 
       let cid = await ipfs.add(JSON.stringify(m));
-      hashes.push(cid['path']);
-      await market.addStore(cid['path'], true);
+      hashes.push(cid["path"]);
+      await market.addStore(cid["path"], true);
     }
 
-    let stores = await getAllStores(market, 0, 10);
+    let stores = await getAll(market.getAllStores, 0, 10);
 
     assert.equal(JSON.stringify(stores), JSON.stringify(hashes));
-    
-  })
-});
+  });
 
-contract("Market", async (accounts) => {
+
   it("Should change a a store's market level visibility", async () => {
     let market = await Market.deployed();
 
@@ -97,5 +90,5 @@ contract("Market", async (accounts) => {
     let new_vis = await market.store_visibility(0);
 
     assert.notEqual(initial_vis, new_vis);
-  })
+  });
 });
