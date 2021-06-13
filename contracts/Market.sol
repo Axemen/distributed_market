@@ -55,6 +55,7 @@ contract Market is Access {
         for (uint256 i = cursor; (c < length && cursor <= store_id_generator.current()); i++) {
             if (store_visibility[cursor] &&  stores[cursor].is_visible()) values[c] = stores[cursor].ipfs_hash();
             cursor++;
+            c++;
         }
         return (cursor, values);
     }
