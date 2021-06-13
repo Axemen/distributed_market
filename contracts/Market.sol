@@ -8,33 +8,46 @@ import "./Store.sol";
 contract Market is Access {
     using IdGenerators for IdGenerators.IdGenerator;
 
-    IdGenerators.IdGenerator store_id_generator;
+    IdGenerators.IdGenerator storeIdGenerator;
     mapping(uint256 => Store) public stores;
-    mapping(uint256 => bool) public store_visibility;
+    mapping(uint256 => bool) storeVisibility;
 
     struct Result {
-        string ipfs_hash;
-        address store_address;
+        string ipfsHash;
+        address storeAddress;
     }
 
     event AddStore(address indexed msgSender, uint storeId, address storeAddress);
 
     constructor() Access(msg.sender){}
 
-    function addStore(string memory ipfs_hash, bool is_visible) 
+    function addStore(string memory ipfsHash, bool isVisible) 
     external {
-        Store s = new Store(msg.sender, ipfs_hash, is_visible);
-        uint storeId = store_id_generator.next();
+        Store s = new Store(msg.sender, ipfsHash, isVisible);
+        uint storeId = storeIdGenerator.next();
 
         stores[storeId] = s;
-        store_visibility[storeId] = true;
+        storeVisibility[storeId] = true;
 
         emit AddStore(msg.sender, storeId, address(s));
     }
 
-    function setStoreVisibility(uint256 store_id, bool visible) 
+    function setStoreVisibility(uint256 storeId, bool isVisible) 
     external requiresAdmin() {
-        store_visibility[store_id] = visible;
+        storeVisibility[storeId] = isVisible;
+    }
+
+    function getStore(uint storeId) 
+    external view returns(Result memory) {
+        Store s = stores[storeId];
+
+        if (storeVisibility[storeId]) {
+            return Result({
+                ipfsHash: s.ipfs_hash(),
+                storeAddress: address(s)
+            });
+        } 
+        return Result();
     }
 
     function getStores(uint256[] calldata ids)
