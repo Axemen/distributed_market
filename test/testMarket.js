@@ -21,8 +21,9 @@ contract("Market", async (accounts) => {
     assert.equal(await market.store_visibility(0), true); // Should default to true
     assert.equal(await store.is_visible(), visibility);
   });
-
-  // Test Market.getStores
+});
+// Test Market.getStores
+contract("Market", async (accounts) => {
   it("Should return one store ipfs and one empty string", async () => {
     let market = await Market.deployed();
     await market.addStore("asdf", true);
@@ -36,28 +37,29 @@ contract("Market", async (accounts) => {
     );
   });
 
-  async function getAll(fn, start, page_size) {
-    let hasMore = true;
-    let allValues = [];
-    let cursor = start;
+});
+async function getAll(fn, start, page_size) {
+  let hasMore = true;
+  let allValues = [];
+  let cursor = start;
 
-    let isNotEmpty = (s) => {
-      if (s === "") return false;
-      return true;
-    };
+  let isNotEmpty = (s) => {
+    if (s === "") return false;
+    return true;
+  };
 
-    while (hasMore) {
-      let r = await fn(cursor, page_size);
-      cursor = r[0].toNumber();
-      let values = r[1];
-      hasMore = values.every(isNotEmpty);
-      allValues = allValues.concat(values);
-    }
-
-    return allValues.filter(isNotEmpty);
+  while (hasMore) {
+    let r = await fn(cursor, page_size);
+    cursor = r[0].toNumber();
+    let values = r[1];
+    hasMore = values.every(isNotEmpty);
+    allValues = allValues.concat(values);
   }
 
-  // Test Market.getAllStores
+  return allValues.filter(isNotEmpty);
+}
+// Test Market.getAllStores
+contract("Market", async (accounts) => {
   it("Should iterate through all available stores", async () => {
     const market = await Market.deployed();
     const ipfs = await IPFS.create();
@@ -78,8 +80,8 @@ contract("Market", async (accounts) => {
 
     assert.equal(JSON.stringify(stores), JSON.stringify(hashes));
   });
-
-
+});
+contract("Market", async (accounts) => {
   it("Should change a a store's market level visibility", async () => {
     let market = await Market.deployed();
 
