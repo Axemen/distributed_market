@@ -9,29 +9,29 @@ contract Store is Access {
     using IdGenerators for IdGenerators.IdGenerator;
 
     struct Item {
-        string ipfs_hash;
-        bool is_visible;
+        string ipfsHash;
+        bool isVisible;
         uint price;
         uint stock;
     }
 
-    string public ipfs_hash;
-    bool public is_visible;
+    string public ipfsHash;
+    bool public isVisible;
 
-    IdGenerators.IdGenerator item_id_generator;
+    IdGenerators.IdGenerator itemIdGenerator;
     mapping(uint => Item) public items; // item_id => ItemInfo
 
-    constructor(address _owner, string memory _ipfs_hash, bool _is_visible) 
+    constructor(address _owner, string memory _ipfsHash, bool _isVisible) 
     Access(_owner) {
         owner = _owner;
-        ipfs_hash = _ipfs_hash;
-        is_visible = _is_visible;
+        ipfsHash = _ipfsHash;
+        isVisible = _isVisible;
     }
 
     function addItem(string memory item_ipfs_hash, bool item_is_visible, uint price, uint stock) external {
-        items[item_id_generator.next()] = Item({
-            ipfs_hash: item_ipfs_hash,
-            is_visible: item_is_visible,
+        items[itemIdGenerator.next()] = Item({
+            ipfsHash: item_ipfs_hash,
+            isVisible: item_is_visible,
             price: price,
             stock: stock
         });
@@ -41,7 +41,7 @@ contract Store is Access {
     external view returns (string[] memory) {
         string[] memory values = new string[](item_ids.length);
         for (uint256 i = 0; i < item_ids.length; i++) {
-            values[i] = items[item_ids[i]].ipfs_hash;
+            values[i] = items[item_ids[i]].ipfsHash;
         }
         return values;
     }
@@ -50,25 +50,25 @@ contract Store is Access {
     external view returns (string[] memory values, uint256) {
         values = new string[](length);
         uint8 c = 0;
-        for (cursor; cursor < item_id_generator.current(); cursor++) {
+        for (cursor; cursor < itemIdGenerator.current(); cursor++) {
             if (c == length) {
                 return (values, cursor);
             }
-            if (items[cursor].is_visible) {
-                values[c] = items[cursor].ipfs_hash;
+            if (items[cursor].isVisible) {
+                values[c] = items[cursor].ipfsHash;
                 c++;
             }
         }
         return (values, cursor);
     }
 
-    function purchaseItem(uint item_id, uint number_to_buy) 
+    function purchaseItem(uint itemId, uint numberToBuy) 
     external payable{
-        require(items[item_id].stock > 0, "This item is no longer in stock");
-        require((items[item_id].stock - number_to_buy) > 0, "This item does not have enough stock");
-        require(msg.value == (items[item_id].price * number_to_buy), "Incorrect value sent with transaction");
+        require(items[itemId].stock > 0, "This item is no longer in stock");
+        require((items[itemId].stock - numberToBuy) > 0, "This item does not have enough stock");
+        require(msg.value == (items[itemId].price * numberToBuy), "Incorrect value sent with transaction");
 
         // reduce the stock by the number to buy
-        items[item_id].stock -= number_to_buy;
+        items[itemId].stock -= numberToBuy;
     }
 }

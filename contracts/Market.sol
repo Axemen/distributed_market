@@ -41,32 +41,44 @@ contract Market is Access {
     external view returns(Result memory) {
         Store s = stores[storeId];
 
-        if (storeVisibility[storeId]) {
-            return Result({
-                ipfsHash: s.ipfs_hash(),
-                storeAddress: address(s)
-            });
-        } 
-        return Result();
+        require(storeId <= storeIdGenerator.current(), "This store does not exist");
+        require(address(s) != address(0), "This store does not exist");
+        require(s.isVisible(), "This store does not exist");
+
+        return Result({
+            ipfsHash: s.ipfsHash(),
+            storeAddress: address(s)
+        });
     }
 
     function getStores(uint256[] calldata ids)
-    external view returns (string[] memory) {
-        string[] memory results = new string[](ids.length);
+    external view returns (Result[] memory) {
+        Result[] memory results = new Result[](ids.length);
+
         for (uint256 i = 0; i < ids.length; i++) {
             if (address(stores[ids[i]]) != address(0)) {
-                results[i] = stores[ids[i]].ipfs_hash();
+                Store s = stores[ids[i]];
+                results[i] = Result({
+                    ipfsHash: s.ipfsHash(),
+                    storeAddress: address(s)
+                });
             }
         }
         return results;
     }
 
     function getAllStores(uint256 cursor, uint256 length)
-    external view returns (uint256, string[] memory) {
+    external view returns (uint256, Result[] memory) {
         uint256 c = 0;
-        string[] memory values = new string[](length);
-        for (uint256 i = cursor; (c < length && cursor <= store_id_generator.current()); i++) {
-            if (store_visibility[cursor] &&  stores[cursor].is_visible()) values[c] = stores[cursor].ipfs_hash();
+        Result[] memory values = new Result[](length);
+        for (uint256 i = cursor; (c < length && cursor <= storeIdGenerator.current()); i++) {
+            if (storeVisibility[cursor] &&  stores[cursor].isVisible()) {
+                Store s = stores[cursor];
+                values[c] = Result({
+                    ipfsHash: s.ipfsHash(),
+                    storeAddress: address(s)
+                });
+            }
             cursor++;
             c++;
         }
