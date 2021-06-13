@@ -61,21 +61,6 @@ async function getAllStores(market, start, page_size) {
   return allValues.filter(isNotEmpty);
 }
 
-// test Market.setStoreVisibility
-contract("Market", async (accounts) => {
-  it("Should change a a store's market level visibility", async () => {
-    let market = await Market.deployed();
-
-    await market.addStore("asdf", true);
-
-    let initial_vis = await market.store_visibility(0);
-    await market.setStoreVisibility(0, false);
-    let new_vis = await market.store_visibility(0);
-
-    assert.notEqual(initial_vis, new_vis);
-  })
-});
-
 // Test Market.getAllStores
 contract("Market", async (accounts) => {
   it("Should iterate through all available stores", async () => {
@@ -98,5 +83,19 @@ contract("Market", async (accounts) => {
 
     assert.equal(JSON.stringify(stores), JSON.stringify(hashes));
     
+  })
+});
+
+contract("Market", async (accounts) => {
+  it("Should change a a store's market level visibility", async () => {
+    let market = await Market.deployed();
+
+    await market.addStore("asdf", true);
+
+    let initial_vis = await market.store_visibility(0);
+    await market.setStoreVisibility(0, false);
+    let new_vis = await market.store_visibility(0);
+
+    assert.notEqual(initial_vis, new_vis);
   })
 });
