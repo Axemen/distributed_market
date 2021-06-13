@@ -3,3 +3,4 @@ bin/
 *.ipynb
 node_modules
 .vscode
+_test.js
