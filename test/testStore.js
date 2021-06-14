@@ -67,5 +67,28 @@ contract("Market", async (_accounts) => {
     values = values.map(e => e[0]); // mapping out ipfsHashes
 
     assert.equal(JSON.stringify(values), JSON.stringify(hashes));
+    ipfs.stop();
   });
+
 });
+
+contract("Market", async (_accounts) => {
+  it("Should purchase an item", async () => {
+    let market = await Market.deployed();
+    await market.addStore("asdf", true);
+    let storeAddress = await market.stores(0);
+    let store = new Store(storeAddress);
+    const ipfs = await IPFS.create();
+
+    let itemOne = {
+      name: "Banana",
+      description: "Long and yellow fruit.",
+    };
+
+    let cid = await ipfs.add(JSON.stringify(itemOne));
+    await store.addItem(cid['path'], true, 100, 10);
+
+    await store.purchaseItem(0, 1, {value: 100});
+    ipfs.stop();
+  })
+})
