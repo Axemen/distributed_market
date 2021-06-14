@@ -46,20 +46,18 @@ contract Store is Access {
         return values;
     }
 
-    function getAllItems(uint256 cursor, uint8 length) 
-    external view returns (string[] memory values, uint256) {
-        values = new string[](length);
-        uint8 c = 0;
-        for (cursor; cursor < itemIdGenerator.current(); cursor++) {
-            if (c == length) {
-                return (values, cursor);
-            }
+    function getAllItems(uint256 cursor, uint length) 
+    external view returns (uint, Item[] memory) {
+        Item[] memory values = new Item[](length);
+        uint c = 0;
+        
+        for (cursor; (c < length && cursor <= itemIdGenerator.current()); cursor++) {
             if (items[cursor].isVisible) {
-                values[c] = items[cursor].ipfsHash;
+                values[c] = items[cursor];
                 c++;
             }
         }
-        return (values, cursor);
+        return (cursor, values);
     }
 
     function purchaseItem(uint itemId, uint numberToBuy) 
