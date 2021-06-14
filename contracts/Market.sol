@@ -76,16 +76,16 @@ contract Market is Access {
     external view returns (uint256, Result[] memory) {
         uint256 c = 0;
         Result[] memory values = new Result[](length);
-        for (uint256 i = cursor; (c < length && cursor <= storeIdGenerator.current()); i++) {
+        for (cursor; (c < length && cursor <= storeIdGenerator.current()); cursor++) {
             if (storeVisibility[cursor] &&  stores[cursor].isVisible()) {
                 Store s = stores[cursor];
                 values[c] = Result({
                     ipfsHash: s.ipfsHash(),
                     storeAddress: address(s)
                 });
+                c++;
             }
             cursor++;
-            c++;
         }
         return (cursor, values);
     }
