@@ -18,8 +18,8 @@ contract("Market", async (_accounts) => {
     let store = new Store(storeAddress);
 
     assert.equal(await market.stores(0), storeAddress);
-    assert.equal(await market.store_visibility(0), true); // Should default to true
-    assert.equal(await store.is_visible(), visibility);
+    assert.equal(await market.getStoreVisibility(0), true); // Should default to true
+    assert.equal(await store.isVisible(), visibility);
   });
 });
 // Test Market.getStores
@@ -29,11 +29,11 @@ contract("Market", async (_accounts) => {
     await market.addStore("asdf", true);
 
     let r = await market.getStores([0, 1]);
-    console.log("Get store results");
+    
 
     assert.equal(
       JSON.stringify(["asdf", ""]),
-      JSON.stringify(await market.getStores([0, 1]))
+      JSON.stringify(r.map((e) => e[0]))
     );
   });
 
@@ -51,7 +51,7 @@ async function getAll(fn, start, page_size) {
   while (hasMore) {
     let r = await fn(cursor, page_size);
     cursor = r[0].toNumber();
-    let values = r[1];
+    let values = r[1].map(e => e[0]);
     hasMore = values.every(isNotEmpty);
     allValues = allValues.concat(values);
   }
@@ -88,9 +88,9 @@ contract("Market", async (_accounts) => {
 
     await market.addStore("asdf", true);
 
-    let initial_vis = await market.store_visibility(0);
+    let initial_vis = await market.getStoreVisibility(0);
     await market.setStoreVisibility(0, false);
-    let new_vis = await market.store_visibility(0);
+    let new_vis = await market.getStoreVisibility(0);
 
     assert.notEqual(initial_vis, new_vis);
   });
