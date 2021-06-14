@@ -11,7 +11,7 @@ contract("Market", async (_accounts) => {
     let storeAddress = await market.stores(0);
     let store = new Store(storeAddress);
 
-    assert.equal(await store.ipfs_hash(), "asdf");
+    assert.equal(await store.ipfsHash(), "asdf");
   });
 
   it("Should add an item", async () => {
@@ -30,13 +30,13 @@ contract("Market", async (_accounts) => {
     await store.addItem(cid["path"], true, 100, 10);
     let i = await store.items(0);
 
-    assert.equal(i.ipfs_hash, cid["path"]);
+    assert.equal(i.ipfsHash, cid["path"]);
     await ipfs.stop();
   });
 });
 
 contract("Market", async (_accounts) => {
-  // Test the creation of a store in the market
+  // test store.getItems
   it("Should add new items and retrieve them", async () => {
     let market = await Market.deployed();
     await market.addStore("asdf", true);
@@ -64,7 +64,7 @@ contract("Market", async (_accounts) => {
     hashes.push(cid['path']);
 
     let values = await store.getItems([0, 1]);
-    console.log(values);
+    values = values.map(e => e[0]); // mapping out ipfsHashes
 
     assert.equal(JSON.stringify(values), JSON.stringify(hashes));
   });
