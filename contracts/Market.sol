@@ -85,7 +85,6 @@ contract Market is Access {
                 });
                 c++;
             }
-            cursor++;
         }
         return (cursor, values);
     }
