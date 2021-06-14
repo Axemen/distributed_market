@@ -37,6 +37,11 @@ contract Market is Access {
         storeVisibility[storeId] = isVisible;
     }
 
+    function getStoreVisibility(uint storeId) 
+    external view requiresAdmin() returns(bool) {
+        return storeVisibility[storeId];
+    }
+
     function getStore(uint storeId) 
     external view returns(Result memory) {
         Store s = stores[storeId];
