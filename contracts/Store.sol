@@ -38,10 +38,12 @@ contract Store is Access {
     }
 
     function getItems(uint256[] calldata item_ids)
-    external view returns (string[] memory) {
-        string[] memory values = new string[](item_ids.length);
+    external view returns (Item[] memory) {
+        Item[] memory values = new Item[](item_ids.length);
         for (uint256 i = 0; i < item_ids.length; i++) {
-            values[i] = items[item_ids[i]].ipfsHash;
+            if (items[i].isVisible) {
+                values[i] = items[item_ids[i]];
+            }
         }
         return values;
     }
