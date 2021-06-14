@@ -21,6 +21,8 @@ contract Store is Access {
     IdGenerators.IdGenerator itemIdGenerator;
     mapping(uint => Item) public items; // item_id => ItemInfo
 
+    event ItemPurchase(address buyer, uint itemId, uint amount);
+
     constructor(address _owner, string memory _ipfsHash, bool _isVisible) 
     Access(_owner) {
         owner = _owner;
@@ -70,5 +72,6 @@ contract Store is Access {
 
         // reduce the stock by the number to buy
         items[itemId].stock -= numberToBuy;
+        emit ItemPurchase(msg.sender, itemId, numberToBuy);
     }
 }
