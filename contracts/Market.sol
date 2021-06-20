@@ -74,16 +74,16 @@ contract Market is Access {
 
     function getAllStores(uint256 cursor, uint256 length)
     external view returns (uint256, Result[] memory) {
-        uint256 c = 0;
+        uint256 numItemsGathered = 0;
         Result[] memory values = new Result[](length);
-        for (cursor; (c < length && cursor <= storeIdGenerator.current()); cursor++) {
+        for (cursor; (numItemsGathered < length && cursor <= storeIdGenerator.current()); cursor++) {
             if (storeVisibility[cursor] &&  stores[cursor].isVisible()) {
                 Store s = stores[cursor];
-                values[c] = Result({
+                values[numItemsGathered] = Result({
                     ipfsHash: s.ipfsHash(),
                     storeAddress: address(s)
                 });
-                c++;
+                numItemsGathered++;
             }
         }
         return (cursor, values);

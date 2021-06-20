@@ -53,12 +53,12 @@ contract Store is Access {
     function getAllItems(uint256 cursor, uint length) 
     external view returns (uint, Item[] memory) {
         Item[] memory values = new Item[](length);
-        uint c = 0;
+        uint numItemsGathered = 0;
         
-        for (cursor; (c < length && cursor <= itemIdGenerator.current()); cursor++) {
+        for (cursor; (numItemsGathered < length && cursor <= itemIdGenerator.current()); cursor++) {
             if (items[cursor].isVisible) {
-                values[c] = items[cursor];
-                c++;
+                values[numItemsGathered] = items[cursor];
+                numItemsGathered++;
             }
         }
         return (cursor, values);
